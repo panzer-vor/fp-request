@@ -37,7 +37,10 @@ function transformRequestData (config: AxiosRequestConfig): AxiosRequestConfig {
 
 function transformHeaders (config: AxiosRequestConfig): AxiosRequestConfig {
 	const { headers = {}, data } = config
-	return processHeaders(headers, data)
+	return {
+		...config,
+		headers: processHeaders(headers, data)
+	}
 }
 
 function transformResponseData (res: AxiosResponse) {
