@@ -1,7 +1,5 @@
-export function isPlainObject(val: any): val is Object {
+export const isPlainObject = (val: any): val is Object => {
   return Object.prototype.toString.call(val) === '[object Object]'
 }
 
-export function higher(fn: Function, ...args: any) {
-  return () => fn(...args)
-}
+export const higher = (fn: Function, ...args: any) => () => fn(...args)
