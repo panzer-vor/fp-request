@@ -1,8 +1,8 @@
-import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from './types'
+import { IRequestConfig, IPromise, IResponse } from './types'
 import { parseHeaders } from './helpers/headers'
 import { keys, forEach, pipe } from 'ramda'
 
-export default function xhr(config: AxiosRequestConfig): AxiosPromise {
+export default function xhr(config: IRequestConfig): IPromise {
   return new Promise((resolve, reject) => {
     const { headers, data = null, url, method = 'get', responseType } = config
     const request = new XMLHttpRequest()
@@ -19,7 +19,7 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
       }
       const responseHeaders = parseHeaders(request.getAllResponseHeaders())
       const responseData = responseType !== 'text' ? request.response : request.responseText
-      const response: AxiosResponse = {
+      const response: IResponse = {
         data: responseData,
         status: request.status,
         statusText: request.statusText,
