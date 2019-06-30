@@ -32,6 +32,25 @@ router.get('/simple/get', function(req, res) {
   })
 })
 
+router.get('/error/get', function(req, res) {
+  res.json({
+    msg: 'hello'
+  })
+})
+
+router.get('/error/timeout', function(req, res) {
+  setTimeout(() => {
+    res.json({
+      msg: 'hello'
+    })
+  }, 10000)
+})
+
+router.post('/config/post', function(req, res) {
+  console.log(req, res)
+  res.json(req.body)
+})
+
 app.use(router)
 
 const port = process.env.PORT || 8080

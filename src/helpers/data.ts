@@ -1,5 +1,5 @@
 import { isPlainObject } from './util'
-import { tryCatch, type, when } from 'ramda'
+import { tryCatch, when } from 'ramda'
 
 const isString = (data: any) => typeof data === 'string'
 
@@ -11,6 +11,5 @@ export const transformRequest = (data: any): any => {
 }
 
 export const transformResponse = (data: any): any => {
-  type('s')
   return when(isString, tryCatch(d => JSON.parse(d), () => null))(data)
 }

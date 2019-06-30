@@ -1,6 +1,6 @@
 import { pipe, map, join, curry, when, ifElse } from 'ramda'
 
-function encode(val: string): string {
+const encode = (val: string): string => {
   return encodeURIComponent(val)
     .replace(/%40/g, '@')
     .replace(/%3A/gi, ':')

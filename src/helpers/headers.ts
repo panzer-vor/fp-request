@@ -12,8 +12,11 @@ import {
   equals,
   isEmpty,
   forEach,
-  split
+  split,
+  mergeDeepRight,
+  mergeDeepLeft,
 } from 'ramda'
+import { AxiosRequestConfig } from '../types';
 
 const hasHeaderName = (normalizedName: string) =>
   ifElse(
@@ -56,4 +59,27 @@ export const parseHeaders = (headers: string): any => {
     })
   )(headers)
   return parsed
+}
+
+export const flattenHeaders = (config: any): AxiosRequestConfig => {
+  const { headers, method } = config
+  if (!headers) {
+    return headers
+  }
+
+  const assignedHeaders = pipe(
+    mergeDeepRight(headers.common),
+    mergeDeepLeft(headers),
+  )(headers[method])
+
+  const methodsToDelete = ['delete', 'get', 'head', 'options', 'post', 'put', 'patch', 'common']
+
+  methodsToDelete.forEach(method => {
+    delete assignedHeaders[method]
+  })
+  
+  return {
+    ...config,
+    headers: assignedHeaders,
+  }
 }
