@@ -13,15 +13,6 @@ axios.defaults.headers.common['test2'] = 132
 //   }
 // }).then(res => console.log(res))
 
-
-const generatorFormData = (obj) => {
-  const formData = new FormData()
-  Object.keys(obj).forEach(v => {
-    formData.set(v, obj[v])
-  })
-  return formData
-}
-
 axios({
   transformRequest: [
     data => data,
