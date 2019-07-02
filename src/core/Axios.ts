@@ -1,28 +1,35 @@
-import { AxiosRequestConfig, AxiosPromise, Method, AxiosResponse, ResolvedFn, RejectedFn } from "../types";
+import {
+  AxiosRequestConfig,
+  AxiosPromise,
+  Method,
+  AxiosResponse,
+  ResolvedFn,
+  RejectedFn
+} from '../types'
 import dispatchRequest from './dispatchRequest'
-import InterceptorManager from "./interceptoerManage";
-import mergeConfig from "./mergeConfig";
-
+import InterceptorManager from './interceptoerManage'
+import mergeConfig from './mergeConfig'
+import { ifElse, type, equals, isEmpty, identity } from 'ramda'
 
 interface Interceptors {
   request: InterceptorManager<AxiosRequestConfig>
-  response: InterceptorManager<AxiosResponse> 
+  response: InterceptorManager<AxiosResponse>
 }
 
 interface PromiseChain<T> {
-  resolved: ResolvedFn<T> | ((config: AxiosRequestConfig) => AxiosPromise),
-  rejected?: RejectedFn,
+  resolved: ResolvedFn<T> | ((config: AxiosRequestConfig) => AxiosPromise)
+  rejected?: RejectedFn
 }
 
 export default class Axios {
   defaults: AxiosRequestConfig
   interceptors: Interceptors
-  
+
   constructor(initConfig: AxiosRequestConfig) {
     this.defaults = initConfig
     this.interceptors = {
       request: new InterceptorManager<AxiosRequestConfig>(),
-      response: new InterceptorManager<AxiosResponse>(),
+      response: new InterceptorManager<AxiosResponse>()
     }
   }
 
@@ -38,10 +45,12 @@ export default class Axios {
 
     config = mergeConfig(this.defaults, config)
 
-    const chain: PromiseChain<any>[] = [{
-      resolved: dispatchRequest,
-      rejected: undefined,
-    }]
+    const chain: PromiseChain<any>[] = [
+      {
+        resolved: dispatchRequest,
+        rejected: undefined
+      }
+    ]
 
     this.interceptors.request.forEach(interceptor => {
       chain.unshift(interceptor)
@@ -60,7 +69,7 @@ export default class Axios {
 
     return promise
   }
-  
+
   get(url: string, config?: AxiosRequestConfig): AxiosPromise {
     return this._requestMethodWithoutData('get', url, config)
   }
@@ -83,16 +92,20 @@ export default class Axios {
     return this._requestMethodWithData('patch', url, data, config)
   }
   _requestMethodWithoutData(method: Method, url: string, config?: AxiosRequestConfig) {
-    return this.request(Object.assign(config || {}, {
-      method,
-      url,
-    }))
+    return this.request(
+      Object.assign(config || {}, {
+        method,
+        url
+      })
+    )
   }
   _requestMethodWithData(method: Method, url: string, data?: any, config?: AxiosRequestConfig) {
-    return this.request(Object.assign(config || {}, {
-      method,
-      url,
-      data,
-    }))
+    return this.request(
+      Object.assign(config || {}, {
+        method,
+        url,
+        data
+      })
+    )
   }
 }

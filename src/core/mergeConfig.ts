@@ -1,30 +1,52 @@
-import { mergeDeepRight } from 'ramda'
-import { AxiosRequestConfig } from "../types";
-import { isPlainObject } from "../helpers/util";
+import {
+  mergeDeepRight,
+  mergeDeepLeft,
+  cond,
+  T,
+  identity,
+  pipe,
+  curry,
+  map,
+  keys,
+  flatten
+} from 'ramda'
+import { AxiosRequestConfig } from '../types'
+import {
+  isPlainObject,
+  NotEqualsUndefined,
+  includesKey,
+  composePipe,
+  flatObject
+} from '../helpers/util'
+
 const strats = Object.create(null)
 
-const defaultStrat = (val1: any, val2: any): any => {
-  return typeof val2 !== 'undefined' ? val2 : val1
-}
-
-const deepMergeStrat = (val1: any, val2 = {}): any => {
-  if (isPlainObject(val2)) {
-    return mergeDeepRight(val1, val2)
-  } else if (typeof val2 !== 'undefined') {
-    return val2
-  } else if (isPlainObject(val1)) {
-    return mergeDeepRight(val1, val2)
-  } else if (typeof val1 !== 'undefined') {
-    return val1
+const defaultStrat = curry(
+  (config1: any, config2: any, key: string): any => {
+    const val1 = config1[key]
+    const val2 = config2[key]
+    return typeof val2 !== 'undefined' ? val2 : val1
   }
-}
+)
 
-
-const fromVal2Strat = (val1: any, val2: any): any => {
-  if (typeof val2 !== 'undefined') {
-    return val2
+const deepMergeStrat = curry(
+  (config1: any, config2: any, key: string): any => {
+    const val1 = config1[key]
+    const val2 = config2[key] || {}
+    return cond([
+      [() => isPlainObject(val2), () => mergeDeepRight(val1, val2)],
+      [isPlainObject, mergeDeepLeft(val2)],
+      [NotEqualsUndefined, identity],
+      [T, () => identity(val2)]
+    ])(val1)
   }
-}
+)
+
+const fromVal2Strat = curry(
+  (config2: any, key: string): any => {
+    return cond([[NotEqualsUndefined, identity]])(config2[key])
+  }
+)
 
 const stratsKeysDeepMerge = ['headers']
 
@@ -42,24 +64,28 @@ export default (config1: AxiosRequestConfig, config2?: AxiosRequestConfig): Axio
   if (!config2) {
     config2 = {}
   }
-  
-  const mergeField = (key: string): void => {
-    const strat = strats[key] || defaultStrat
-    config[key] = strat(config1[key], config2![key])
-  }
-  
 
-  const config = Object.create(null)
-
-  for (let key in config2) {
-    mergeField(key)
+  const mergeField = (key: string, config1: any, config2: any): any => {
+    return cond([
+      [includesKey(['url', 'params', 'data']), fromVal2Strat(config2)],
+      [includesKey(['headers']), deepMergeStrat(config1, config2)],
+      [T, defaultStrat(config1, config2)]
+    ])(key)
   }
 
-  for (let key in config1) {
-    if(!config2[key]) {
-      mergeField(key)
-    }
-  }
-  
-  return config
+  const pipe1 = pipe(
+    keys,
+    map(key => mergeField(key, config1, config2))
+  )
+
+  const pipe2 = pipe(
+    Object.entries,
+    map(([key, value]) => (!value ? mergeField(key, config1, config2) : null))
+  )
+
+  return pipe(
+    composePipe([pipe1, pipe2]),
+    flatten,
+    flatObject
+  )([config2, config1])
 }
