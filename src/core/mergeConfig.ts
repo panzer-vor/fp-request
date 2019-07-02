@@ -19,8 +19,6 @@ import {
   flatObject
 } from '../helpers/util'
 
-const strats = Object.create(null)
-
 const defaultStrat = curry(
   (config1: any, config2: any, key: string): any => {
     const val1 = config1[key]
@@ -48,29 +46,19 @@ const fromVal2Strat = curry(
   }
 )
 
-const stratsKeysDeepMerge = ['headers']
-
-stratsKeysDeepMerge.forEach(key => {
-  strats[key] = deepMergeStrat
-})
-
-const stratKeysFromVal2 = ['url', 'params', 'data']
-
-stratKeysFromVal2.forEach(key => {
-  strats[key] = fromVal2Strat
-})
-
 export default (config1: AxiosRequestConfig, config2?: AxiosRequestConfig): AxiosRequestConfig => {
   if (!config2) {
     config2 = {}
   }
 
   const mergeField = (key: string, config1: any, config2: any): any => {
-    return cond([
-      [includesKey(['url', 'params', 'data']), fromVal2Strat(config2)],
-      [includesKey(['headers']), deepMergeStrat(config1, config2)],
-      [T, defaultStrat(config1, config2)]
-    ])(key)
+    return {
+      [key]: cond([
+        [includesKey(['url', 'params', 'data']), fromVal2Strat(config2)],
+        [includesKey(['headers']), deepMergeStrat(config1, config2)],
+        [T, defaultStrat(config1, config2)]
+      ])(key)
+    }
   }
 
   const pipe1 = pipe(

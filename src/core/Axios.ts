@@ -9,7 +9,6 @@ import {
 import dispatchRequest from './dispatchRequest'
 import InterceptorManager from './interceptoerManage'
 import mergeConfig from './mergeConfig'
-import { ifElse, type, equals, isEmpty, identity } from 'ramda'
 
 interface Interceptors {
   request: InterceptorManager<AxiosRequestConfig>

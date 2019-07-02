@@ -26,9 +26,11 @@ export const composePipe = (pipes: any[]) => (datas: any[]) => {
 export const flatObject = (objArray: any[]) => {
   const config = Object.create(null)
   objArray.forEach((v: any) => {
-    Object.entries(v).forEach(([key, value]) => {
-      config[key] = value
-    })
+    if (v) {
+      Object.entries(v).forEach(([key, value]) => {
+        config[key] = value
+      })
+    }
   })
   return config
 }

@@ -17,6 +17,7 @@ module.exports = {
     filename: '[name].js',
     publicPath: '/__build__/',
   },
+  devtool: 'cheap-module-eval-source-map',
   module: {
     rules: [
       {

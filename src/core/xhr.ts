@@ -18,10 +18,17 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
       if (response.status >= 200 && response.status < 300) {
         resolve(response)
       } else {
-        reject(createError(`Request failed with status code ${response.status}`, config, null, request, response))
+        reject(
+          createError(
+            `Request failed with status code ${response.status}`,
+            config,
+            null,
+            request,
+            response
+          )
+        )
       }
     }
-
 
     request.open(method.toUpperCase(), url!, true)
 
@@ -30,8 +37,11 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
         return
       }
 
-      if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
-        return;
+      if (
+        request.status === 0 &&
+        !(request.responseURL && request.responseURL.indexOf('file:') === 0)
+      ) {
+        return
       }
 
       const responseHeaders = parseHeaders(request.getAllResponseHeaders())
@@ -61,6 +71,7 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
         request.setRequestHeader(v, headers[v])
       })
     )(headers)
+
     request.send(data)
   })
 }
