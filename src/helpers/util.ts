@@ -19,7 +19,7 @@ export const NotEqualsUndefined = (data: any) => {
 
 export const includesKey = (array: string[]) => (key: string) => array.includes(key)
 
-export const composePipe = (...pipes: any[]) => (...datas: any[]) => {
+export const composePipe = (pipes: any[]) => (datas: any[]) => {
   return pipes.map((v, i) => v(datas[i]))
 }
 
