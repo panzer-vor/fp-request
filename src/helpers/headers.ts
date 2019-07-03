@@ -64,7 +64,7 @@ export const parseHeaders = (headers: string): any => {
 export const flattenHeaders = (config: any): AxiosRequestConfig => {
   const { headers, method } = config
   if (!headers) {
-    return headers
+    return config
   }
 
   const assignedHeaders = pipe(

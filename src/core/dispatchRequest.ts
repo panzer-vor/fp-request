@@ -1,9 +1,16 @@
 import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from '../types'
 import xhr from './xhr'
 import { buildURL } from '../helpers/url'
-import { pipe } from 'ramda'
+import * as R from 'ramda'
 import { flattenHeaders } from '../helpers/headers'
 import { transformRequestCore, transformResponseCore } from './transfrom'
+
+const throwIfCancellationRequested = (config: AxiosRequestConfig): AxiosRequestConfig => {
+  if (config.cancelToken) {
+    config.cancelToken.throwIfRequested()
+  }
+  return config
+}
 
 const transformURL = (config: AxiosRequestConfig): AxiosRequestConfig => {
   const { url, params } = config
@@ -18,15 +25,16 @@ const transformResponseData = (res: AxiosResponse) => {
 }
 
 const transformConfig = (config: AxiosRequestConfig) => {
-  return pipe(
+  return R.pipe(
     transformURL,
     transformRequestCore,
-    flattenHeaders
+    flattenHeaders,
   )(config)
 }
 
 export default (config: AxiosRequestConfig): AxiosPromise => {
-  return pipe(
+  return R.pipe(
+    throwIfCancellationRequested,
     transformConfig,
     config =>
       xhr(config).then(res => {
@@ -37,3 +45,4 @@ export default (config: AxiosRequestConfig): AxiosPromise => {
       })
   )(config)
 }
+
