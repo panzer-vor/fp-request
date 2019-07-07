@@ -1,6 +1,6 @@
 import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from '../types'
 import xhr from './xhr'
-import { buildURL } from '../helpers/url'
+import { buildURL, isAbsoluteURL, combineURL } from '../helpers/url'
 import * as R from 'ramda'
 import { flattenHeaders } from '../helpers/headers'
 import { transformRequestCore, transformResponseCore } from './transfrom'
@@ -12,11 +12,14 @@ const throwIfCancellationRequested = (config: AxiosRequestConfig): AxiosRequestC
   return config
 }
 
-const transformURL = (config: AxiosRequestConfig): AxiosRequestConfig => {
-  const { url, params } = config
+export const transformURL = (config: AxiosRequestConfig): AxiosRequestConfig => {
+  let { url, params, paramsSerializer, baseUrl } = config
+  if (baseUrl && !isAbsoluteURL(url!)) {
+    url = combineURL(baseUrl, url)
+  }
   return {
     ...config,
-    url: buildURL(url!, params)
+    url: buildURL(url!, params, paramsSerializer)
   }
 }
 

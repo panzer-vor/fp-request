@@ -13,10 +13,11 @@
     "declarationDir": "dist/types",
     "outDir": "dist/lib",
     "typeRoots": [
-      "node_modules/@types"
+      "node_modules/@types",
     ]
   },
   "include": [
-    "src"
+    "src",
+    "test"
   ]
 }

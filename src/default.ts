@@ -10,6 +10,11 @@ const defaults: AxiosRequestConfig = {
       Accept: 'application/json, text/plain, */*'
     }
   },
+
+  xsrfCookieName: 'XSRF-TOKEN',
+
+  xsrfHeaderName: 'X-XSRF-TOKEN',
+
   transformRequest: [
     (config): any => {
       const { headers, data } = config
@@ -24,7 +29,11 @@ const defaults: AxiosRequestConfig = {
     (data: any): any => {
       return transformResponse(data)
     }
-  ]
+  ],
+
+  vaildateStatus(status: number): boolean {
+    return status >= 200 && status < 300
+  }
 }
 
 const methodsNoData = ['delete', 'get', 'head', 'options']
