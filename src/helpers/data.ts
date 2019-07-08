@@ -11,5 +11,11 @@ export const transformRequest = (data: any): any => {
 }
 
 export const transformResponse = (data: any): any => {
-  return when(isString, tryCatch(d => JSON.parse(d), () => null))(data)
+  return when(
+    isString, 
+    tryCatch(
+      d => JSON.parse(d), 
+      () => data
+    )
+  )(data)
 }

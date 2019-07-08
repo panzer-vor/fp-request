@@ -23,4 +23,6 @@ axios.Cancel = Cancel
 axios.CancelToken = CancelToken
 axios.isCancel = isCancel
 
+axios.Axios = Axios
+
 export default axios

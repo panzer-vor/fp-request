@@ -34,3 +34,7 @@ export const flatObject = (objArray: any[]) => {
   })
   return config
 }
+
+export function isURLSearchParams(val: any): val is URLSearchParams {
+  return typeof val !== 'undefined' && val instanceof URLSearchParams
+}

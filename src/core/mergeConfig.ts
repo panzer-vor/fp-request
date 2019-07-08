@@ -55,7 +55,7 @@ export default (config1: AxiosRequestConfig, config2?: AxiosRequestConfig): Axio
     return {
       [key]: cond([
         [includesKey(['url', 'params', 'data']), fromVal2Strat(config2)],
-        [includesKey(['headers']), deepMergeStrat(config1, config2)],
+        [includesKey(['headers', 'auth']), deepMergeStrat(config1, config2)],
         [T, defaultStrat(config1, config2)]
       ])(key)
     }
