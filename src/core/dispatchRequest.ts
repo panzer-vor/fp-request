@@ -45,6 +45,11 @@ export default (config: AxiosRequestConfig): AxiosPromise => {
           ...res,
           data: transformResponseData(res)
         }
+      }, e => {
+        if (e && e.response) {
+          e.response = transformResponseData(e.response)
+        }
+        return Promise.reject(e)
       })
   )(config)
 }
