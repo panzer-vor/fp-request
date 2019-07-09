@@ -41,9 +41,7 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
         )
       }
 
-      request.ontimeout = () => {
-        reject(createError(`Timeout of ${timeout} ms exceeded`, config, 'ECONNABORTED', request))
-      }
+
     }
 
     const configureRequest = (): void => {
@@ -55,6 +53,10 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
     }
 
     const addEvents = (): void => {
+      request.ontimeout = () => {
+        reject(createError(`Timeout of ${timeout} ms exceeded`, config, 'ECONNABORTED', request))
+      }
+
       request.onreadystatechange = () => {
         if (!request || request.readyState !== 4) {
           return

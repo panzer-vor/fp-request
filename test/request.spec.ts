@@ -62,28 +62,26 @@ describe('request', () => {
       .then(next)
   })
 
-  // test('should reject when request timeout', done => {
-  //   let err: AxiosError
+  test('should reject when request timeout', done => {
+    let err: AxiosError
 
-  //   axios('/foo', {
-  //     timeout: 2000,
-  //     method: 'post',
-  //   }).then(res => {
-  //     console.log(11111111111111)
-  //   }).catch(error => {
-  //     err = error
-  //   })
+    axios('/foo', {
+      timeout: 2000,
+      method: 'post',
+    }).catch(error => {
+      err = error
+    })
 
-  //   getAjaxRequest().then(request => {
-  //     // @ts-ignore
-  //     request.eventBus.trigger('timeout')
-  //     setTimeout(() => {
-  //       expect(err instanceof Error).toBeTruthy()
-  //       expect(err.message).toBe('Timeout of 2000 ms exceeded')
-  //       done()
-  //     }, 100)
-  //   })
-  // })
+    getAjaxRequest().then(request => {
+      // @ts-ignore
+      request.eventBus.trigger('timeout')
+      setTimeout(() => {
+        expect(err instanceof Error).toBeTruthy()
+        expect(err.message).toBe('Timeout of 2000 ms exceeded')
+        done()
+      }, 100)
+    })
+  })
 
   test('should reject when validateStatus returns false', () => {
     const resolveSpy = jest.fn((res: AxiosResponse) => {

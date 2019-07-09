@@ -43,7 +43,7 @@ router.get('/error/timeout', function(req, res) {
     res.json({
       msg: 'hello'
     })
-  }, 10000)
+  }, 4000)
 })
 
 router.post('/config/post', function(req, res) {
