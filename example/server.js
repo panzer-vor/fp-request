@@ -47,8 +47,7 @@ router.get('/error/timeout', function(req, res) {
 })
 
 router.post('/config/post', function(req, res) {
-  console.log(req, res)
-  res.json(req.body)
+  res.json(req)
 })
 
 router.get('/cancel/get', function(req, res) {

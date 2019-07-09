@@ -23,15 +23,14 @@ export const transformURL = (config: AxiosRequestConfig): AxiosRequestConfig => 
   }
 }
 
-const transformResponseData = (res: AxiosResponse) => {
-  return transformResponseCore(res.data, res.config.transformResponse)
-}
+const transformResponseData = (res: AxiosResponse) =>
+  transformResponseCore(res.data, res.config.transformResponse)
 
 const transformConfig = (config: AxiosRequestConfig) => {
   return R.pipe(
     transformURL,
     transformRequestCore,
-    flattenHeaders,
+    flattenHeaders
   )(config)
 }
 
@@ -40,17 +39,19 @@ export default (config: AxiosRequestConfig): AxiosPromise => {
     throwIfCancellationRequested,
     transformConfig,
     config =>
-      xhr(config).then(res => {
-        return {
-          ...res,
-          data: transformResponseData(res)
+      xhr(config).then(
+        res => {
+          return {
+            ...res,
+            data: transformResponseData(res)
+          }
+        },
+        e => {
+          if (e && e.response) {
+            e.response.data = transformResponseData(e.response)
+          }
+          return Promise.reject(e)
         }
-      }, e => {
-        if (e && e.response) {
-          e.response = transformResponseData(e.response)
-        }
-        return Promise.reject(e)
-      })
+      )
   )(config)
 }
-

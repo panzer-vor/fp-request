@@ -5,20 +5,34 @@ import { AxiosRequestConfig } from '../types'
 const hasHeaderName = (normalizedName: string) =>
   R.ifElse(
     R.isEmpty,
+    R.F,
     R.pipe(
       R.keys,
       R.any((key: string) => R.equals(R.toUpper(key), R.toUpper(normalizedName)))
-    ),
-    R.F
+    )
   )
+
+const setHeaderName = (normalizedName: string) => (headers: any) => {
+  const key: any = R.pipe(
+    R.keys,
+    R.find((key: string) => R.equals(R.toUpper(key), R.toUpper(normalizedName)))
+  )(headers)
+  const val = R.prop(key, headers)
+  return R.pipe(
+    R.dissoc(key),
+    R.assoc(normalizedName, val)
+  )(headers)
+}
 
 export const processHeaders = (headers: any, data: any): any => {
   return R.when(
-    R.nAry(2, isPlainObject)(data),
-    // higher(isPlainObject, data),
+    higher(isPlainObject, data),
     R.ifElse(
       hasHeaderName('Content-Type'),
-      R.clone,
+      R.pipe(
+        R.clone,
+        setHeaderName('Content-Type')
+      ),
       R.assoc('Content-Type', 'application/json;charset=utf-8')
     )
   )(headers)

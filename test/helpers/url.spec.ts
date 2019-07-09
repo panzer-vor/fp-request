@@ -30,8 +30,10 @@ describe('helpers: url', () => {
 
     test('URL with ?', () => {
       const newURL = url + '?'
-      const params = 'a=1'
-      expect(buildURL(newURL, params)).toBe(`${newURL}${params}`)
+      const params = {
+        a: 1
+      }
+      expect(buildURL(newURL, params)).toBe(`${newURL}a=1`)
     })
   })
 })

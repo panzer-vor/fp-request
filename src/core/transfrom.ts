@@ -1,9 +1,7 @@
-import { AxiosTransformer, AxiosRequestConfig } from "../types";
+import { AxiosTransformer, AxiosRequestConfig } from '../types'
 
 export const transformRequestCore = (config: AxiosRequestConfig): any => {
-  let {
-    transformRequest
-  } = config
+  let { transformRequest } = config
   if (!transformRequest) {
     return config
   }
@@ -13,6 +11,7 @@ export const transformRequestCore = (config: AxiosRequestConfig): any => {
   transformRequest.forEach(fn => {
     config = fn(config)
   })
+
   return config
 }
 

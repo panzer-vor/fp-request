@@ -13,24 +13,37 @@ axios.defaults.headers.common['test2'] = 132
 //   }
 // }).then(res => console.log(res))
 
-axios({
-  transformRequest: [
-    data => data,
-    ...(axios.defaults.transformRequest as AxiosTransformer[]),
-  ],
-  transformResponse: [
-    ...(axios.defaults.transformResponse as AxiosTransformer[]),
-    data => {
-      data.b = 2 
-      return data
-    }
-  ],
-  url: '/config/post',
-  method: 'post',
-  data: {
-    a: 1,
+// axios({
+//   transformRequest: [
+//     data => data,
+//     ...(axios.defaults.transformRequest as AxiosTransformer[]),
+//   ],
+//   transformResponse: [
+//     ...(axios.defaults.transformResponse as AxiosTransformer[]),
+//     data => {
+//       data.b = 2 
+//       return data
+//     }
+//   ],
+//   url: '/config/post',
+//   method: 'post',
+//   data: {
+//     a: 1,
+//   },
+//   headers: {
+//     test: '321'
+//   }
+// }).then(res => console.log(res))
+
+axios.post(
+  '/config/post',
+  {
+    prop: 'value'
   },
-  headers: {
-    test: '321'
+  {
+    headers: {
+      'content-type': 'application/json'
+    }
   }
-}).then(res => console.log(res))
+)
+
