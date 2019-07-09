@@ -1,40 +1,25 @@
 import { isPlainObject, higher } from './util'
-import {
-  toUpper,
-  ifElse,
-  keys,
-  pipe,
-  any,
-  F,
-  when,
-  assoc,
-  clone,
-  equals,
-  isEmpty,
-  forEach,
-  split,
-  mergeDeepRight,
-  mergeDeepLeft
-} from 'ramda'
+import * as R from 'ramda'
 import { AxiosRequestConfig } from '../types'
 
 const hasHeaderName = (normalizedName: string) =>
-  ifElse(
-    isEmpty,
-    pipe(
-      keys,
-      any((key: string) => equals(toUpper(key), toUpper(normalizedName)))
+  R.ifElse(
+    R.isEmpty,
+    R.pipe(
+      R.keys,
+      R.any((key: string) => R.equals(R.toUpper(key), R.toUpper(normalizedName)))
     ),
-    F
+    R.F
   )
 
 export const processHeaders = (headers: any, data: any): any => {
-  return when(
-    higher(isPlainObject, data),
-    ifElse(
+  return R.when(
+    R.nAry(2, isPlainObject)(data),
+    // higher(isPlainObject, data),
+    R.ifElse(
       hasHeaderName('Content-Type'),
-      clone,
-      assoc('Content-Type', 'application/json;charset=utf-8')
+      R.clone,
+      R.assoc('Content-Type', 'application/json;charset=utf-8')
     )
   )(headers)
 }
@@ -44,9 +29,9 @@ export const parseHeaders = (headers: string): any => {
   if (!headers) {
     return parsed
   }
-  pipe(
-    split('\r\n'),
-    forEach(line => {
+  R.pipe(
+    R.split('\r\n'),
+    R.forEach(line => {
       let [key, val] = line.split(':')
       key = key.trim().toLowerCase()
       if (!key) {
@@ -67,9 +52,9 @@ export const flattenHeaders = (config: any): AxiosRequestConfig => {
     return config
   }
 
-  const assignedHeaders = pipe(
-    mergeDeepRight(headers.common),
-    mergeDeepLeft(headers)
+  const assignedHeaders = R.pipe(
+    R.mergeDeepRight(headers.common),
+    R.mergeDeepLeft(headers)
   )(headers[method])
 
   const methodsToDelete = ['delete', 'get', 'head', 'options', 'post', 'put', 'patch', 'common']

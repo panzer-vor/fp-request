@@ -2,26 +2,27 @@ import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from '../types'
 import { parseHeaders } from '../helpers/headers'
 import { keys, forEach, pipe } from 'ramda'
 import { createError } from '../helpers/error'
-import { isURLSameOrigin, isFormData } from '../helpers/url';
-import cookie from '../helpers/cookie';
+import { isURLSameOrigin } from '../helpers/url'
+import cookie from '../helpers/cookie'
+import { isFormData } from '../helpers/util'
 
 export default function xhr(config: AxiosRequestConfig): AxiosPromise {
   return new Promise((resolve, reject) => {
-    const { 
-      headers, 
-      data = null, 
-      url, 
-      method = 'get', 
-      responseType, 
-      timeout, 
-      cancelToken, 
-      withCredentials, 
-      xsrfCookieName, 
+    const {
+      headers,
+      data = null,
+      url,
+      method = 'get',
+      responseType,
+      timeout,
+      cancelToken,
+      withCredentials,
+      xsrfCookieName,
       xsrfHeaderName,
       onDownloadProgress,
       onUploadProgress,
       auth,
-      vaildateStatus,
+      vaildateStatus
     } = config
     const request = new XMLHttpRequest()
 
@@ -49,7 +50,7 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
       if (responseType) request.responseType = responseType
 
       if (timeout) request.timeout = timeout
-  
+
       if (withCredentials) request.withCredentials = withCredentials
     }
 
@@ -58,14 +59,14 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
         if (!request || request.readyState !== 4) {
           return
         }
-  
+
         if (
           request.status === 0 &&
           !(request.responseURL && request.responseURL.indexOf('file:') === 0)
         ) {
           return
         }
-  
+
         const responseHeaders = parseHeaders(request.getAllResponseHeaders())
         const responseData = responseType !== 'text' ? request.response : request.responseText
         const response: AxiosResponse = {
@@ -78,7 +79,7 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
         }
         handleResponse(response)
       }
-  
+
       request.onerror = () => {
         reject(createError('Network Error', config, null, request))
       }
@@ -86,7 +87,7 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
       if (onDownloadProgress) {
         request.onprogress = onDownloadProgress
       }
-  
+
       if (onUploadProgress) {
         request.upload.onprogress = onUploadProgress
       }

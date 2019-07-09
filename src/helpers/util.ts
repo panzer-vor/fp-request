@@ -2,8 +2,12 @@ export const isPlainObject = (val: any): val is Object => {
   return Object.prototype.toString.call(val) === '[object Object]'
 }
 
+export function isFormData(val: any): val is FormData {
+  return typeof val !== 'undefined' && val instanceof FormData
+}
+
 export const higher = (fn: Function, ...args: any) => {
-  return () => fn(...args)
+  return (argument?: any) => fn(...args)
 }
 
 export const extend = <T, U>(to: T, from: U): T & U => {
@@ -33,8 +37,4 @@ export const flatObject = (objArray: any[]) => {
     }
   })
   return config
-}
-
-export function isURLSearchParams(val: any): val is URLSearchParams {
-  return typeof val !== 'undefined' && val instanceof URLSearchParams
 }

@@ -1,9 +1,12 @@
-import { pipe, map, join, curry, when, ifElse } from 'ramda'
-import { isURLSearchParams } from './util';
+import * as R from 'ramda'
 
 interface URLOrigin {
   protocol: string
   host: string
+}
+
+const isURLSearchParams = (val: any): val is URLSearchParams => {
+  return typeof val !== 'undefined' && val instanceof URLSearchParams
 }
 
 const encode = (val: string): string => {
@@ -19,9 +22,13 @@ const encode = (val: string): string => {
 
 const hashCut = (str: string) => () => str.replace(/#.*/, '')
 
-const strAdd = curry((a, joinStr, b) => b + joinStr + a)
+const strAdd = R.curry((a, joinStr, b) => b + joinStr + a)
 
-export function buildURL(url: string, params?: any, paramsSerializer?: (params: any) => string): string {
+export const buildURL = (
+  url: string,
+  params?: any,
+  paramsSerializer?: (params: any) => string
+): string => {
   if (!params) {
     return url
   }
@@ -33,21 +40,21 @@ export function buildURL(url: string, params?: any, paramsSerializer?: (params: 
   } else if (isURLSearchParams(params)) {
     serializedParams = params.toString()
   } else {
-    serializedParams = pipe(
+    serializedParams = R.pipe(
       Object.entries,
-      map(
+      R.map(
         ([key, value]) =>
           `${encode(key)}=${encode(typeof value === 'string' ? value : JSON.stringify(value))}`
       ),
-      join('&')
+      R.join('&')
     )(params)
   }
 
-  return when(
+  return R.when(
     str => !!str,
-    pipe(
+    R.pipe(
       hashCut(url),
-      ifElse(
+      R.ifElse(
         url => url.indexOf('?') !== -1,
         strAdd(serializedParams, ''),
         strAdd(serializedParams, '?')
@@ -57,25 +64,23 @@ export function buildURL(url: string, params?: any, paramsSerializer?: (params: 
 }
 
 const urlParsingNode = document.createElement('a')
-const currentOrigin = resolveURL(window.location.href)
-function resolveURL(url: string): URLOrigin {
+const resolveURL = (url: string): URLOrigin => {
   urlParsingNode.setAttribute('href', url)
 
   const { protocol, host } = urlParsingNode
 
   return {
-    protocol, 
-    host,
+    protocol,
+    host
   }
 }
+const currentOrigin = resolveURL(window.location.href)
 
 export function isURLSameOrigin(requestURL: string): boolean {
   const parsedOrigin = resolveURL(requestURL)
-  return (parsedOrigin.protocol === currentOrigin.protocol && parsedOrigin.host === currentOrigin.host)
-}
-
-export function isFormData(val: any): val is FormData {
-  return typeof val !== 'undefined' && val instanceof FormData
+  return (
+    parsedOrigin.protocol === currentOrigin.protocol && parsedOrigin.host === currentOrigin.host
+  )
 }
 
 export function isAbsoluteURL(url: string): boolean {
@@ -83,5 +88,7 @@ export function isAbsoluteURL(url: string): boolean {
 }
 
 export function combineURL(baseURL: string, relatiiveURL?: string): string {
-  return relatiiveURL ? `${baseURL.replace(/\/+$/, '')}/${relatiiveURL.replace(/^\/+/, '')}` : baseURL
+  return relatiiveURL
+    ? `${baseURL.replace(/\/+$/, '')}/${relatiiveURL.replace(/^\/+/, '')}`
+    : baseURL
 }
