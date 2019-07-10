@@ -46,7 +46,7 @@ export const parseHeaders = (headers: string): any => {
   R.pipe(
     R.split('\r\n'),
     R.forEach(line => {
-      let [key, val] = line.split(':')
+      let [key, val = ''] = line.split(':')
       key = key.trim().toLowerCase()
       if (!key) {
         return

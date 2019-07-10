@@ -1,4 +1,4 @@
-import { buildURL } from '../../src/helpers/url'
+import { buildURL, isAbsoluteURL, combineURL } from '../../src/helpers/url'
 import * as R from 'ramda'
 
 describe('helpers: url', () => {
@@ -31,9 +31,27 @@ describe('helpers: url', () => {
     test('URL with ?', () => {
       const newURL = url + '?'
       const params = {
-        a: 1
+        a: '1'
       }
       expect(buildURL(newURL, params)).toBe(`${newURL}a=1`)
+    })
+  })
+
+  describe('isAbsoluteURL', () => {
+    test('URL is absolute', () => {
+      expect(isAbsoluteURL('http://aaa.com/')).toBeTruthy()
+      expect(isAbsoluteURL('//aaa.com/')).toBeTruthy()
+      expect(isAbsoluteURL('ws://aaa.com/')).toBeTruthy()
+      expect(isAbsoluteURL('/aaa.com/')).toBeFalsy()
+      expect(isAbsoluteURL('aaa.com/')).toBeFalsy()
+    })
+  })
+
+  describe('combineURL', () => {
+    test('URL combine with default', () => {
+      expect(combineURL('http://aaa.com', 'home')).toBe('http://aaa.com/home')
+      expect(combineURL('http://aaa.com/', '/home')).toBe('http://aaa.com/home')
+      expect(combineURL('http://aaa.com')).toBe('http://aaa.com')
     })
   })
 })

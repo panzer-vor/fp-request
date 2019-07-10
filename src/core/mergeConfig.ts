@@ -23,8 +23,7 @@ const deepMergeStrat = R.curry(
     return R.cond([
       [() => isPlainObject(val2), () => R.mergeDeepRight(val1, val2)],
       [isPlainObject, R.mergeDeepLeft(val2)],
-      [NotEqualsUndefined, R.identity],
-      [R.T, () => R.identity(val2)]
+      [NotEqualsUndefined, R.identity]
     ])(val1)
   }
 )
