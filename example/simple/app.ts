@@ -32,16 +32,13 @@ import axios from '../../src/index'
 
 // axios.interceptors.response.eject(interceptor)
 
-axios.post(
-  '/foo',
-  {
-    prop: 'value'
-  },
+axios.get(
+  '/simple/get',
   {
     headers: {
       'content-type': 'application/json'
     }
   }
 ).then(res => {
-
+  console.log(res)
 })

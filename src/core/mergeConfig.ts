@@ -48,7 +48,6 @@ export default (config1: AxiosRequestConfig, config2?: AxiosRequestConfig): Axio
       ])(key)
     }
   }
-
   const pipe1 = R.pipe(
     R.keys,
     R.map(key => mergeField(key, config1, config2))
@@ -56,12 +55,12 @@ export default (config1: AxiosRequestConfig, config2?: AxiosRequestConfig): Axio
 
   const pipe2 = R.pipe(
     Object.entries,
-    R.map(([key, value]) => (value ? mergeField(key, config1, config2) : null))
+    R.map(([key, value]) => (typeof value !== 'undefined' ? mergeField(key, config1, config2) : null))
   )
 
   return R.pipe(
     composePipe([pipe1, pipe2]),
     R.flatten,
-    flatObject
+    flatObject,
   )([config2, config1])
 }

@@ -13,9 +13,9 @@ const throwIfCancellationRequested = (config: AxiosRequestConfig): AxiosRequestC
 }
 
 export const transformURL = (config: AxiosRequestConfig): AxiosRequestConfig => {
-  let { url, params, paramsSerializer, baseUrl } = config
-  if (baseUrl && !isAbsoluteURL(url!)) {
-    url = combineURL(baseUrl, url)
+  let { url, params, paramsSerializer, baseURL } = config
+  if (baseURL && !isAbsoluteURL(url!)) {
+    url = combineURL(baseURL, url)
   }
   return {
     ...config,
