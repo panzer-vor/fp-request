@@ -1,6 +1,5 @@
 import axios, { AxiosResponse, AxiosError } from '../src/index'
 import { getAjaxRequest } from './helpers'
-import { request } from 'http'
 
 describe('request', () => {
   beforeEach(() => {
@@ -67,7 +66,7 @@ describe('request', () => {
 
     axios('/foo', {
       timeout: 2000,
-      method: 'post',
+      method: 'post'
     }).catch(error => {
       err = error
     })

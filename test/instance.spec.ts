@@ -1,6 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from '../src/index'
 import { getAjaxRequest } from './helpers'
-import { request } from 'https';
 
 describe('instance', () => {
   beforeEach(() => {
@@ -93,7 +92,7 @@ describe('instance', () => {
   })
 
   test('should use instance options', () => {
-    const instance = axios.create({ timeout: 1000})
+    const instance = axios.create({ timeout: 1000 })
 
     instance.head('/foo')
 
@@ -118,18 +117,21 @@ describe('instance', () => {
     })
 
     const instance = axios.create()
-    
+
     instance.interceptors.request.use(config => {
       config.withCredentials = true
       return config
     })
 
     let response: AxiosResponse
-    instance.get('/foo').then(res => {response = res})
+    instance.get('/foo').then(res => {
+      response = res
+    })
 
     getAjaxRequest().then(request => {
       request.respondWith({
-        status: 200
+        status: 200,
+        responseText: '{"b": 2}'
       })
     })
 
@@ -146,7 +148,7 @@ describe('instance', () => {
       url: '/user/12345',
       params: {
         username: 'a',
-        password: 'b',
+        password: 'b'
       }
     }
 
