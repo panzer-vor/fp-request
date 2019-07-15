@@ -32,7 +32,7 @@ import axios from '../../src/index'
 
 // axios.interceptors.response.eject(interceptor)
 
-axios.get(
+axios(
   '/simple/get',
   {
     headers: {

@@ -12,6 +12,7 @@ const defaultStrat = R.curry(
   (config1: any, config2: any, key: string): any => {
     const val1 = config1[key]
     const val2 = config2[key]
+    console.log(typeof val2 !== 'undefined' ? val2 : val1)
     return typeof val2 !== 'undefined' ? val2 : val1
   }
 )
@@ -55,12 +56,14 @@ export default (config1: AxiosRequestConfig, config2?: AxiosRequestConfig): Axio
 
   const pipe2 = R.pipe(
     Object.entries,
-    R.map(([key, value]) => (typeof value !== 'undefined' ? mergeField(key, config1, config2) : null))
+    R.map(([key, value]) =>
+      typeof value !== 'undefined' ? mergeField(key, config1, config2) : null
+    )
   )
 
   return R.pipe(
     composePipe([pipe1, pipe2]),
     R.flatten,
-    flatObject,
+    flatObject
   )([config2, config1])
 }

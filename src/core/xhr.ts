@@ -12,7 +12,7 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
       headers,
       data = null,
       url,
-      method,
+      method = 'get',
       responseType,
       timeout,
       cancelToken,
@@ -119,12 +119,14 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
 
     const processCancel = (): void => {
       if (cancelToken) {
-        cancelToken.promise.then(reason => {
-          request.abort()
-          reject(reason)
-        }).catch(() => {
-          // do nothing
-        })
+        cancelToken.promise
+          .then(reason => {
+            request.abort()
+            reject(reason)
+          })
+          .catch(() => {
+            // do nothing
+          })
       }
     }
 
